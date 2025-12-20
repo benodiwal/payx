@@ -7,6 +7,7 @@
 - [Quick Start](./getting-started/quick-start.md)
 - [Configuration](./getting-started/configuration.md)
 - [CLI Tool](./getting-started/cli.md)
+- [Testing](./getting-started/testing.md)
 
 # API Reference
 

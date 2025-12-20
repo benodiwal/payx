@@ -112,10 +112,30 @@ docker compose up -d db
 # Run server
 cp .env.example .env
 cargo run -p payx-server
-
-# Run tests
-cargo test -p payx-server
 ```
+
+## Testing
+
+Tests use [testcontainers](https://github.com/testcontainers/testcontainers-rs) to automatically spin up an isolated PostgreSQL instance. No external database setup required.
+
+```bash
+# Run all tests (requires Docker)
+cargo test -p payx-server -- --test-threads=1
+
+# Run a specific test
+cargo test -p payx-server -- test_transfer_between_accounts --test-threads=1
+```
+
+**Note:** Tests must run with `--test-threads=1` because they share a database container and each test truncates tables during setup.
+
+**Test coverage includes:**
+- Transfer, credit, and debit transactions
+- Idempotency handling
+- Authentication and authorization
+- Error handling (insufficient funds, not found, validation)
+- Concurrent transfers and balance integrity
+- Webhook outbox creation
+- Business and account CRUD operations
 
 ## License
 
