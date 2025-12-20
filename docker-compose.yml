@@ -12,6 +12,8 @@ services:
       db:
         condition: service_healthy
     restart: unless-stopped
+    labels:
+      - "logging=promtail"
 
   db:
     image: postgres:16-alpine
@@ -40,6 +42,24 @@ services:
       - "4317:4317"   # OTLP gRPC
       - "4318:4318"   # OTLP HTTP
 
+  loki:
+    image: grafana/loki:latest
+    command: ["-config.file=/etc/loki/loki.yaml"]
+    volumes:
+      - ./docker/loki/loki.yaml:/etc/loki/loki.yaml
+      - loki_data:/loki
+    ports:
+      - "3100:3100"
+
+  promtail:
+    image: grafana/promtail:latest
+    command: ["-config.file=/etc/promtail/promtail.yaml"]
+    volumes:
+      - ./docker/promtail/promtail.yaml:/etc/promtail/promtail.yaml
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    depends_on:
+      - loki
+
   grafana:
     image: grafana/grafana:latest
     environment:
@@ -54,8 +74,10 @@ services:
       - "3000:3000"
     depends_on:
       - tempo
+      - loki
 
 volumes:
   postgres_data:
   tempo_data:
+  loki_data:
   grafana_data:
