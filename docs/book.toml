@@ -1,0 +1,12 @@
+[book]
+title = "PayX Documentation"
+authors = ["Sachin Beniwal"]
+language = "en"
+
+[build]
+build-dir = "book"
+
+[output.html]
+git-repository-url = "https://github.com/sachinbeniwal/payx"
+default-theme = "rust"
+preferred-dark-theme = "ayu"
