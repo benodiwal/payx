@@ -23,6 +23,18 @@ payx/
 └── docker-compose.yml
 ```
 
+## Design
+
+See [DESIGN.md](./DESIGN.md) for detailed design documentation including:
+
+- Assumptions and constraints
+- API design decisions
+- Database schema design
+- Transaction processing flow
+- Webhook system architecture
+- Security model
+- Trade-offs and rationale
+
 ## Quick Start
 
 ```bash
