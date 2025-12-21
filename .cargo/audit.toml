@@ -1,0 +1,9 @@
+# Cargo audit configuration
+# https://rustsec.org/
+
+[advisories]
+# Ignore RSA timing vulnerability - we only use PostgreSQL, not MySQL
+# The vulnerable code path is only in sqlx-mysql which we don't use
+ignore = [
+    "RUSTSEC-2023-0071",
+]
