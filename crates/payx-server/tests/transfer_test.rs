@@ -78,7 +78,10 @@ async fn create_business(router: &Router) -> (String, String) {
     create_business_with_webhook(router, None).await
 }
 
-async fn create_business_with_webhook(router: &Router, webhook_url: Option<&str>) -> (String, String) {
+async fn create_business_with_webhook(
+    router: &Router,
+    webhook_url: Option<&str>,
+) -> (String, String) {
     let mut body = json!({
         "name": "Test Business",
         "email": format!("test{}@example.com", uuid::Uuid::new_v4())
@@ -820,7 +823,7 @@ async fn test_list_transactions() {
         .await
         .unwrap();
     let json: Value = serde_json::from_slice(&body).unwrap();
-    assert!(json.as_array().unwrap().len() >= 1);
+    assert!(!json.as_array().unwrap().is_empty());
 }
 
 #[tokio::test]
@@ -888,7 +891,8 @@ async fn test_get_transaction() {
 async fn test_webhook_outbox_created_on_transaction() {
     let (router, pool) = setup().await;
 
-    let (business_id, api_key) = create_business_with_webhook(&router, Some("https://example.com/webhook")).await;
+    let (business_id, api_key) =
+        create_business_with_webhook(&router, Some("https://example.com/webhook")).await;
     let account_id = create_account(&router, &api_key, &business_id, "1000.00").await;
 
     router
@@ -913,11 +917,12 @@ async fn test_webhook_outbox_created_on_transaction() {
         .await
         .unwrap();
 
-    let webhook_count: (i64,) = sqlx::query_as("SELECT COUNT(*) FROM webhook_outbox WHERE business_id = $1")
-        .bind(uuid::Uuid::parse_str(&business_id).unwrap())
-        .fetch_one(&pool)
-        .await
-        .unwrap();
+    let webhook_count: (i64,) =
+        sqlx::query_as("SELECT COUNT(*) FROM webhook_outbox WHERE business_id = $1")
+            .bind(uuid::Uuid::parse_str(&business_id).unwrap())
+            .fetch_one(&pool)
+            .await
+            .unwrap();
 
     assert!(webhook_count.0 >= 1);
 }
@@ -926,7 +931,8 @@ async fn test_webhook_outbox_created_on_transaction() {
 async fn test_list_webhook_deliveries() {
     let (router, _pool) = setup().await;
 
-    let (business_id, api_key) = create_business_with_webhook(&router, Some("https://example.com/webhook")).await;
+    let (business_id, api_key) =
+        create_business_with_webhook(&router, Some("https://example.com/webhook")).await;
     let account_id = create_account(&router, &api_key, &business_id, "1000.00").await;
 
     router
