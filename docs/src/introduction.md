@@ -1,41 +1,35 @@
 # PayX
 
-A production-grade transaction service built in Rust.
+A transaction service in Rust with double-entry bookkeeping.
 
 ## Features
 
-- **API Authentication** - Secure API key authentication with Argon2 hashing
-- **Account Management** - Create accounts for businesses, check balances
-- **Transactions** - Credit, debit, and transfer operations with atomic balance updates
-- **Double-Entry Bookkeeping** - Every transaction creates balanced ledger entries
-- **Webhooks** - Reliable delivery with transactional outbox pattern
-- **Idempotency** - Prevent duplicate transactions with idempotency keys
-- **Rate Limiting** - Per-API-key rate limiting
-- **Observability** - OpenTelemetry integration for traces and structured logging
-
-## Tech Stack
-
-| Component | Technology |
-|-----------|------------|
-| Framework | Axum |
-| Database | PostgreSQL |
-| Auth | Argon2 |
-| Observability | OpenTelemetry |
-| Containerization | Docker |
+- API key auth (Argon2)
+- Atomic transfers with ledger entries
+- Webhooks (outbox pattern)
+- Idempotency
+- Rate limiting
+- OpenTelemetry
 
 ## Source Code
 
 ```
-src/
-├── main.rs              # Entry point with graceful shutdown
-├── lib.rs               # App initialization
-├── config.rs            # Environment configuration
-├── error.rs             # Error types
-├── telemetry.rs         # OpenTelemetry setup
-├── api/
-│   ├── routes.rs        # Route definitions
-│   ├── middleware/      # Auth, rate limiting
-│   └── handlers/        # Request handlers
-├── domain/              # Business entities
-└── workers/             # Background processors
+crates/
+├── payx-server/src/
+│   ├── main.rs           # Entry point
+│   ├── lib.rs            # App init
+│   ├── config.rs         # Env config
+│   ├── error.rs          # Error types
+│   ├── telemetry.rs      # OpenTelemetry
+│   ├── api/
+│   │   ├── routes.rs     # Routes
+│   │   ├── middleware/   # Auth, rate limiting
+│   │   └── handlers/     # Request handlers
+│   ├── domain/           # Business entities
+│   └── workers/          # Webhook processor
+└── payx-cli/src/
+    ├── main.rs           # CLI entry
+    ├── client.rs         # HTTP client
+    ├── config.rs         # CLI config
+    └── commands/         # Subcommands
 ```

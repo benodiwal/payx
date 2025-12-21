@@ -127,7 +127,7 @@ You can also use the CLI for these operations:
 payx config set --api-key payx_YOUR_API_KEY
 
 # Create accounts
-payx account create --business-id BUSINESS_UUID --balance 1000
+payx account create --business-id BUSINESS_UUID --balance 1000 --currency USD
 
 # Transfer funds
 payx transaction transfer \

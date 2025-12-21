@@ -11,7 +11,9 @@ docker compose up -d
 Services:
 - **app**: PayX API server
 - **db**: PostgreSQL 16
-- **tempo**: Distributed tracing backend (OpenTelemetry)
+- **tempo**: Distributed tracing
+- **loki**: Log aggregation
+- **promtail**: Log collector
 - **grafana**: Observability UI (http://localhost:3000)
 
 ## Docker (Production)
