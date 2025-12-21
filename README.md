@@ -1,16 +1,15 @@
 # PayX
 
-A production-grade transaction service built in Rust.
+A transaction service in Rust with double-entry bookkeeping.
 
 ## Features
 
-- API key authentication with Argon2 hashing
-- Atomic transactions with double-entry bookkeeping
-- Reliable webhooks via transactional outbox pattern
-- Idempotency support
+- API key auth (Argon2)
+- Atomic transfers with ledger entries
+- Webhooks (outbox pattern)
+- Idempotency
 - Rate limiting
-- OpenTelemetry integration
-- CLI tool for interacting with the API
+- OpenTelemetry
 
 ## Project Structure
 
@@ -18,22 +17,12 @@ A production-grade transaction service built in Rust.
 payx/
 ├── crates/
 │   ├── payx-server/    # API server
-│   └── payx-cli/       # Command-line interface
-├── docs/               # mdbook documentation
+│   └── payx-cli/       # CLI
+├── docs/               # mdbook docs
 └── docker-compose.yml
 ```
 
-## Design
-
-See [DESIGN.md](./DESIGN.md) for detailed design documentation including:
-
-- Assumptions and constraints
-- API design decisions
-- Database schema design
-- Transaction processing flow
-- Webhook system architecture
-- Security model
-- Trade-offs and rationale
+See [DESIGN.md](./DESIGN.md) for architecture details.
 
 ## Quick Start
 
@@ -116,26 +105,13 @@ cargo run -p payx-server
 
 ## Testing
 
-Tests use [testcontainers](https://github.com/testcontainers/testcontainers-rs) to automatically spin up an isolated PostgreSQL instance. No external database setup required.
+Tests use [testcontainers](https://github.com/testcontainers/testcontainers-rs) for database isolation.
 
 ```bash
-# Run all tests (requires Docker)
 cargo test -p payx-server -- --test-threads=1
-
-# Run a specific test
-cargo test -p payx-server -- test_transfer_between_accounts --test-threads=1
 ```
 
-**Note:** Tests must run with `--test-threads=1` because they share a database container and each test truncates tables during setup.
-
-**Test coverage includes:**
-- Transfer, credit, and debit transactions
-- Idempotency handling
-- Authentication and authorization
-- Error handling (insufficient funds, not found, validation)
-- Concurrent transfers and balance integrity
-- Webhook outbox creation
-- Business and account CRUD operations
+Note: `--test-threads=1` required (shared database container).
 
 ## License
 
