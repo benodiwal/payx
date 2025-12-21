@@ -63,7 +63,11 @@ pub async fn run(cmd: Commands, config: &Config, format: Format) -> Result<()> {
     let client = ApiClient::new(config);
 
     match cmd {
-        Commands::List { limit, offset, status } => {
+        Commands::List {
+            limit,
+            offset,
+            status,
+        } => {
             let mut url = format!("/v1/webhooks/deliveries?limit={}", limit);
             if let Some(off) = offset {
                 url.push_str(&format!("&offset={}", off));
@@ -84,7 +88,10 @@ pub async fn run(cmd: Commands, config: &Config, format: Format) -> Result<()> {
                     println!("ID:             {}", delivery.id);
                     println!("Event Type:     {}", delivery.event_type);
                     println!("Status:         {}", delivery.status);
-                    println!("Attempts:       {}/{}", delivery.attempts, delivery.max_attempts);
+                    println!(
+                        "Attempts:       {}/{}",
+                        delivery.attempts, delivery.max_attempts
+                    );
                     println!("Created:        {}", delivery.created_at);
                     if let Some(processed) = &delivery.processed_at {
                         println!("Processed:      {}", processed);

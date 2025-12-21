@@ -38,7 +38,10 @@ pub fn build(state: Arc<AppState>) -> Router {
         .route("/accounts", get(accounts::list))
         .route("/accounts", post(accounts::create))
         .route("/accounts/:id", get(accounts::get))
-        .route("/accounts/:id/transactions", get(accounts::list_transactions))
+        .route(
+            "/accounts/:id/transactions",
+            get(accounts::list_transactions),
+        )
         .route("/transactions", get(transactions::list))
         .route("/transactions", post(transactions::create))
         .route("/transactions/:id", get(transactions::get))
@@ -47,7 +50,10 @@ pub fn build(state: Arc<AppState>) -> Router {
         .route("/webhooks/endpoints/:id", delete(webhooks::delete_endpoint))
         .route("/webhooks/deliveries", get(webhooks::list_deliveries))
         .route("/webhooks/deliveries/:id", get(webhooks::get_delivery))
-        .route("/webhooks/deliveries/:id/retry", post(webhooks::retry_delivery))
+        .route(
+            "/webhooks/deliveries/:id/retry",
+            post(webhooks::retry_delivery),
+        )
         .layer(from_fn_with_state(state.clone(), rate_limit::middleware))
         .layer(from_fn_with_state(state.clone(), auth::middleware));
 
@@ -61,14 +67,13 @@ pub fn build(state: Arc<AppState>) -> Router {
         .merge(public)
         .fallback(fallback);
 
-    api.with_state(state)
-        .layer(
-            ServiceBuilder::new()
-                .layer(SetRequestIdLayer::x_request_id(MakeRequestUuid))
-                .layer(PropagateRequestIdLayer::x_request_id())
-                .layer(TraceLayer::new_for_http())
-                .layer(TimeoutLayer::new(Duration::from_secs(30)))
-                .layer(CompressionLayer::new())
-                .layer(CorsLayer::permissive()),
-        )
+    api.with_state(state).layer(
+        ServiceBuilder::new()
+            .layer(SetRequestIdLayer::x_request_id(MakeRequestUuid))
+            .layer(PropagateRequestIdLayer::x_request_id())
+            .layer(TraceLayer::new_for_http())
+            .layer(TimeoutLayer::new(Duration::from_secs(30)))
+            .layer(CompressionLayer::new())
+            .layer(CorsLayer::permissive()),
+    )
 }

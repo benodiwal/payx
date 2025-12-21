@@ -8,7 +8,9 @@ use chrono::Utc;
 use serde::Deserialize;
 use uuid::Uuid;
 
-use crate::domain::{Account, AccountResponse, CreateAccountRequest, Transaction, TransactionResponse};
+use crate::domain::{
+    Account, AccountResponse, CreateAccountRequest, Transaction, TransactionResponse,
+};
 use crate::error::{AppError, Result};
 use crate::AppState;
 
@@ -50,7 +52,9 @@ pub async fn list(
         }
     };
 
-    Ok(Json(accounts.into_iter().map(AccountResponse::from).collect()))
+    Ok(Json(
+        accounts.into_iter().map(AccountResponse::from).collect(),
+    ))
 }
 
 pub async fn create(
@@ -143,5 +147,10 @@ pub async fn list_transactions(
         }
     };
 
-    Ok(Json(transactions.into_iter().map(TransactionResponse::from).collect()))
+    Ok(Json(
+        transactions
+            .into_iter()
+            .map(TransactionResponse::from)
+            .collect(),
+    ))
 }

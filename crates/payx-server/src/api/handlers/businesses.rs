@@ -29,13 +29,12 @@ pub async fn list(
     State(state): State<Arc<AppState>>,
     Query(query): Query<ListQuery>,
 ) -> Result<Json<Vec<Business>>> {
-    let businesses: Vec<Business> = sqlx::query_as(
-        "SELECT * FROM businesses ORDER BY created_at DESC LIMIT $1 OFFSET $2",
-    )
-    .bind(query.limit)
-    .bind(query.offset.unwrap_or(0))
-    .fetch_all(&state.db)
-    .await?;
+    let businesses: Vec<Business> =
+        sqlx::query_as("SELECT * FROM businesses ORDER BY created_at DESC LIMIT $1 OFFSET $2")
+            .bind(query.limit)
+            .bind(query.offset.unwrap_or(0))
+            .fetch_all(&state.db)
+            .await?;
 
     Ok(Json(businesses))
 }

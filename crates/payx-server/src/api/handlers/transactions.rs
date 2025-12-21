@@ -49,17 +49,20 @@ pub async fn list(
             .await?
         }
         None => {
-            sqlx::query_as(
-                "SELECT * FROM transactions ORDER BY created_at DESC LIMIT $1 OFFSET $2",
-            )
-            .bind(query.limit)
-            .bind(query.offset.unwrap_or(0))
-            .fetch_all(&state.db)
-            .await?
+            sqlx::query_as("SELECT * FROM transactions ORDER BY created_at DESC LIMIT $1 OFFSET $2")
+                .bind(query.limit)
+                .bind(query.offset.unwrap_or(0))
+                .fetch_all(&state.db)
+                .await?
         }
     };
 
-    Ok(Json(transactions.into_iter().map(TransactionResponse::from).collect()))
+    Ok(Json(
+        transactions
+            .into_iter()
+            .map(TransactionResponse::from)
+            .collect(),
+    ))
 }
 
 pub async fn create(
@@ -90,7 +93,10 @@ pub async fn create(
         }
     };
 
-    Ok((StatusCode::CREATED, Json(TransactionResponse::from(transaction))))
+    Ok((
+        StatusCode::CREATED,
+        Json(TransactionResponse::from(transaction)),
+    ))
 }
 
 pub async fn get(
@@ -185,7 +191,13 @@ async fn execute_credit(
     .execute(&mut *tx)
     .await?;
 
-    enqueue_webhook(&mut tx, dest.business_id, "transaction.completed", &transaction).await?;
+    enqueue_webhook(
+        &mut tx,
+        dest.business_id,
+        "transaction.completed",
+        &transaction,
+    )
+    .await?;
 
     tx.commit().await?;
     Ok(transaction)
@@ -269,7 +281,13 @@ async fn execute_debit(
     .execute(&mut *tx)
     .await?;
 
-    enqueue_webhook(&mut tx, source.business_id, "transaction.completed", &transaction).await?;
+    enqueue_webhook(
+        &mut tx,
+        source.business_id,
+        "transaction.completed",
+        &transaction,
+    )
+    .await?;
 
     tx.commit().await?;
     Ok(transaction)
@@ -406,9 +424,21 @@ async fn execute_transfer(
     .execute(&mut *tx)
     .await?;
 
-    enqueue_webhook(&mut tx, source.business_id, "transaction.completed", &transaction).await?;
+    enqueue_webhook(
+        &mut tx,
+        source.business_id,
+        "transaction.completed",
+        &transaction,
+    )
+    .await?;
     if source.business_id != dest.business_id {
-        enqueue_webhook(&mut tx, dest.business_id, "transaction.completed", &transaction).await?;
+        enqueue_webhook(
+            &mut tx,
+            dest.business_id,
+            "transaction.completed",
+            &transaction,
+        )
+        .await?;
     }
 
     tx.commit().await?;

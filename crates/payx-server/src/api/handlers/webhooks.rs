@@ -11,7 +11,9 @@ use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
 use crate::api::middleware::auth::AuthContext;
-use crate::domain::{Business, CreateWebhookEndpointRequest, UpdateWebhookEndpointRequest, WebhookOutbox};
+use crate::domain::{
+    Business, CreateWebhookEndpointRequest, UpdateWebhookEndpointRequest, WebhookOutbox,
+};
 use crate::error::{AppError, Result};
 use crate::AppState;
 
@@ -185,7 +187,12 @@ pub async fn list_deliveries(
         }
     };
 
-    Ok(Json(deliveries.into_iter().map(WebhookDeliveryResponse::from).collect()))
+    Ok(Json(
+        deliveries
+            .into_iter()
+            .map(WebhookDeliveryResponse::from)
+            .collect(),
+    ))
 }
 
 pub async fn get_delivery(
@@ -193,14 +200,13 @@ pub async fn get_delivery(
     Extension(auth): Extension<AuthContext>,
     Path(id): Path<Uuid>,
 ) -> Result<Json<WebhookDeliveryResponse>> {
-    let delivery: WebhookOutbox = sqlx::query_as(
-        "SELECT * FROM webhook_outbox WHERE id = $1 AND business_id = $2",
-    )
-    .bind(id)
-    .bind(auth.api_key.business_id)
-    .fetch_optional(&state.db)
-    .await?
-    .ok_or(AppError::NotFound("Webhook delivery not found".into()))?;
+    let delivery: WebhookOutbox =
+        sqlx::query_as("SELECT * FROM webhook_outbox WHERE id = $1 AND business_id = $2")
+            .bind(id)
+            .bind(auth.api_key.business_id)
+            .fetch_optional(&state.db)
+            .await?
+            .ok_or(AppError::NotFound("Webhook delivery not found".into()))?;
 
     Ok(Json(WebhookDeliveryResponse::from(delivery)))
 }
@@ -222,7 +228,9 @@ pub async fn retry_delivery(
     .bind(auth.api_key.business_id)
     .fetch_optional(&state.db)
     .await?
-    .ok_or(AppError::NotFound("Webhook delivery not found or not in failed status".into()))?;
+    .ok_or(AppError::NotFound(
+        "Webhook delivery not found or not in failed status".into(),
+    ))?;
 
     Ok(Json(WebhookDeliveryResponse::from(delivery)))
 }

@@ -90,7 +90,11 @@ pub async fn run(cmd: Commands, config: &Config, format: Format) -> Result<()> {
     let client = ApiClient::new(config);
 
     match cmd {
-        Commands::List { business_id, limit, offset } => {
+        Commands::List {
+            business_id,
+            limit,
+            offset,
+        } => {
             let mut url = format!("/v1/accounts?limit={}", limit);
             if let Some(biz_id) = business_id {
                 url.push_str(&format!("&business_id={}", biz_id));

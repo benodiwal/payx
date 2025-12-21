@@ -28,7 +28,10 @@ pub enum AppError {
     NotFound(String),
 
     #[error("currency mismatch: from {from_currency}, to {to_currency}")]
-    CurrencyMismatch { from_currency: String, to_currency: String },
+    CurrencyMismatch {
+        from_currency: String,
+        to_currency: String,
+    },
 
     #[error("idempotency conflict: existing transaction {existing_id}")]
     IdempotencyConflict {
@@ -88,12 +91,18 @@ impl IntoResponse for AppError {
             Self::TransactionNotFound(_) => (StatusCode::NOT_FOUND, "transaction_not_found", None),
             Self::NotFound(_) => (StatusCode::NOT_FOUND, "not_found", None),
             Self::CurrencyMismatch { .. } => (StatusCode::BAD_REQUEST, "currency_mismatch", None),
-            Self::IdempotencyConflict { .. } => (StatusCode::CONFLICT, "idempotency_conflict", None),
+            Self::IdempotencyConflict { .. } => {
+                (StatusCode::CONFLICT, "idempotency_conflict", None)
+            }
             Self::InvalidApiKey => (StatusCode::UNAUTHORIZED, "invalid_api_key", None),
             Self::RateLimitExceeded => (StatusCode::TOO_MANY_REQUESTS, "rate_limit_exceeded", None),
             Self::Validation(_) => (StatusCode::BAD_REQUEST, "validation_error", None),
             Self::Database(_) => (StatusCode::INTERNAL_SERVER_ERROR, "database_error", None),
-            Self::Serialization(_) => (StatusCode::INTERNAL_SERVER_ERROR, "serialization_error", None),
+            Self::Serialization(_) => (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                "serialization_error",
+                None,
+            ),
             Self::Internal(_) => (StatusCode::INTERNAL_SERVER_ERROR, "internal_error", None),
         };
 

@@ -36,13 +36,12 @@ pub async fn middleware(
     }
     let prefix = &key[..12];
 
-    let api_key: ApiKey = sqlx::query_as(
-        "SELECT * FROM api_keys WHERE key_prefix = $1 AND revoked_at IS NULL",
-    )
-    .bind(prefix)
-    .fetch_optional(&state.db)
-    .await?
-    .ok_or(AppError::InvalidApiKey)?;
+    let api_key: ApiKey =
+        sqlx::query_as("SELECT * FROM api_keys WHERE key_prefix = $1 AND revoked_at IS NULL")
+            .bind(prefix)
+            .fetch_optional(&state.db)
+            .await?
+            .ok_or(AppError::InvalidApiKey)?;
 
     if !api_key.is_valid() || !api_key.verify(key) {
         return Err(AppError::InvalidApiKey);

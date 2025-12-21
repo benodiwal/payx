@@ -122,10 +122,12 @@ async fn deliver_webhook(
 }
 
 async fn mark_delivered(pool: &PgPool, id: Uuid) -> anyhow::Result<()> {
-    sqlx::query("UPDATE webhook_outbox SET status = 'delivered', processed_at = NOW() WHERE id = $1")
-        .bind(id)
-        .execute(pool)
-        .await?;
+    sqlx::query(
+        "UPDATE webhook_outbox SET status = 'delivered', processed_at = NOW() WHERE id = $1",
+    )
+    .bind(id)
+    .execute(pool)
+    .await?;
     Ok(())
 }
 
