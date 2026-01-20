@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: payx
+  labels:
+    app.kubernetes.io/name: payx
+    app.kubernetes.io/part-of: payx
