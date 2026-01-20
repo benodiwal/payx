@@ -314,7 +314,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: benodiwal/payx
+          images: warriyohyperion/payx
           tags: |
             type=raw,value=latest
             type=sha,prefix=
@@ -335,7 +335,7 @@ jobs:
         run: |
           echo "## DockerHub Push Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Image**: benodiwal/payx" >> $GITHUB_STEP_SUMMARY
+          echo "**Image**: warriyohyperion/payx" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Tags**:" >> $GITHUB_STEP_SUMMARY
           echo "${{ steps.meta.outputs.tags }}" | while read tag; do

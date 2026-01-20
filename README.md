@@ -153,7 +153,7 @@ Configure these secrets in your repository (Settings → Secrets and variables �
 1. Go to your GitHub repository
 2. Navigate to **Settings** → **Secrets and variables** → **Actions**
 3. Click **New repository secret**
-4. Add `DOCKERHUB_USERNAME` with value `benodiwal`
+4. Add `DOCKERHUB_USERNAME` with value `warriyohyperion`
 5. Add `DOCKERHUB_TOKEN` with your DockerHub access token
 
 ### DockerHub Access Token
