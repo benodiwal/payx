@@ -80,3 +80,123 @@ jobs:
           echo "- **Image**: ghcr.io/${{ github.repository }}:${{ steps.tag.outputs.TAG }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "ArgoCD will automatically sync and deploy the new version." >> $GITHUB_STEP_SUMMARY
+
+  dast:
+    name: DAST Security Scan (Placeholder)
+    runs-on: ubuntu-latest
+    needs: [update-manifests]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: DAST Scan Simulation
+        run: |
+          echo "=========================================="
+          echo "  DAST (Dynamic Application Security Testing)"
+          echo "=========================================="
+          echo ""
+          echo "This is a placeholder for DAST security scanning."
+          echo ""
+          echo "In a production environment, this stage would:"
+          echo ""
+          echo "1. WAIT for ArgoCD to complete deployment to a staging/test environment"
+          echo ""
+          echo "2. RUN OWASP ZAP or similar DAST tool against the live application:"
+          echo "   - Spider/crawl the application to discover endpoints"
+          echo "   - Perform active scanning for vulnerabilities"
+          echo "   - Test for OWASP Top 10 vulnerabilities:"
+          echo "     * SQL Injection"
+          echo "     * Cross-Site Scripting (XSS)"
+          echo "     * Broken Authentication"
+          echo "     * Sensitive Data Exposure"
+          echo "     * XML External Entities (XXE)"
+          echo "     * Broken Access Control"
+          echo "     * Security Misconfiguration"
+          echo "     * Insecure Deserialization"
+          echo "     * Using Components with Known Vulnerabilities"
+          echo "     * Insufficient Logging & Monitoring"
+          echo ""
+          echo "3. GENERATE security reports in multiple formats:"
+          echo "   - SARIF for GitHub Security tab integration"
+          echo "   - HTML for human-readable reports"
+          echo "   - JSON for programmatic processing"
+          echo ""
+          echo "4. FAIL the pipeline if critical vulnerabilities are found"
+          echo ""
+          echo "Example OWASP ZAP command:"
+          echo "  docker run -t owasp/zap2docker-stable zap-api-scan.py \\"
+          echo "    -t https://api.example.com/openapi.json \\"
+          echo "    -f openapi \\"
+          echo "    -r zap-report.html"
+          echo ""
+          echo "=========================================="
+
+      - name: Create DAST Placeholder Report
+        run: |
+          mkdir -p reports
+          cat > reports/dast-placeholder-report.json << 'EOF'
+          {
+            "scan_type": "DAST",
+            "tool": "Placeholder (OWASP ZAP recommended)",
+            "status": "simulated",
+            "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "target": "https://payx.example.com",
+            "findings": [],
+            "notes": [
+              "This is a placeholder report.",
+              "In production, this would contain actual DAST findings.",
+              "Configure OWASP ZAP or Nuclei for real scanning.",
+              "Requires a running application endpoint to scan."
+            ],
+            "recommended_tools": [
+              {
+                "name": "OWASP ZAP",
+                "url": "https://www.zaproxy.org/",
+                "description": "Industry-standard DAST tool"
+              },
+              {
+                "name": "Nuclei",
+                "url": "https://nuclei.projectdiscovery.io/",
+                "description": "Fast vulnerability scanner with community templates"
+              },
+              {
+                "name": "Burp Suite",
+                "url": "https://portswigger.net/burp",
+                "description": "Professional web security testing tool"
+              }
+            ]
+          }
+          EOF
+          cat reports/dast-placeholder-report.json
+
+      - name: Upload DAST Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: dast-report
+          path: reports/
+          retention-days: 30
+
+      - name: Summary
+        run: |
+          echo "## DAST Security Scan Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Status: Placeholder" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "This DAST stage is a placeholder demonstrating where dynamic security testing would occur in the pipeline." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### What DAST Would Test" >> $GITHUB_STEP_SUMMARY
+          echo "- SQL Injection vulnerabilities" >> $GITHUB_STEP_SUMMARY
+          echo "- Cross-Site Scripting (XSS)" >> $GITHUB_STEP_SUMMARY
+          echo "- Authentication bypass" >> $GITHUB_STEP_SUMMARY
+          echo "- API security issues" >> $GITHUB_STEP_SUMMARY
+          echo "- Business logic flaws" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Recommended Tools" >> $GITHUB_STEP_SUMMARY
+          echo "- [OWASP ZAP](https://www.zaproxy.org/)" >> $GITHUB_STEP_SUMMARY
+          echo "- [Nuclei](https://nuclei.projectdiscovery.io/)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Prerequisites for Real DAST" >> $GITHUB_STEP_SUMMARY
+          echo "1. Running application endpoint (staging environment)" >> $GITHUB_STEP_SUMMARY
+          echo "2. OpenAPI/Swagger specification for API scanning" >> $GITHUB_STEP_SUMMARY
+          echo "3. Test credentials for authenticated scanning" >> $GITHUB_STEP_SUMMARY
